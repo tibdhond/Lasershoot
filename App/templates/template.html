@@ -8,26 +8,19 @@
   {{ super() }}
 {% endblock %}
 {% block content %}  
-  <!--<h4>Current time: {{ current_time | datetimefilter }}</h4>
-  <br>
-  <p>My string: {{my_string}}</p>
-  <p>Value from the list: {{my_list[3]}}</p>
-  <p>Loop through the list:</p>
-  <ul>
-    {% for n in my_list %}
-    <li>{{n}}</li>
-    {% endfor %}
-  </ul>
-  <br>
-  <p>Same list with a filter: {{ my_list|join(', ') }}</p>   -->
+ <h1>{{ current_pi }}</h1>
+    <div id="status">{{ status }}</div>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
+    var current_pi = "{{ current_pi }}"
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
         socket.emit('connection', {data: 'I\'m connected!'});
     });
-    socket.on('new_score', function (from) {
-    console.log('I received a private message by ', from, ' saying ');
+    socket.on('new_status', function (json) {
+    console.log("Received: ", json);
+    var status = json[current_pi];
+    console.log(status);
   });
 </script>
   {% block footer %}

@@ -34,27 +34,36 @@ def hello():
     games = Game.query.all()
     return render_template("index.html", games=games)
 
-@app.route("/<gameid>")
+@app.route("/showscore/<gameid>")
 def showscore(gameid):
     scores_freddy = Scores.query.filter((Scores.game==gameid) & (Scores.idpi=="freddy")).all()
     scores_brico = Scores.query.filter((Scores.game==gameid) & (Scores.idpi=="brico")).all()
     scores_e17 = Scores.query.filter((Scores.game==gameid) & (Scores.idpi=="e17")).all()
-    return  render_template('score.html', score_freddy=len(scores_freddy), score_brico=len(scores_brico),
+
+    return render_template('score.html', score_freddy=len(scores_freddy), score_brico=len(scores_brico),
         score_e17=len(scores_e17))
 
-@app.route("/lifeofpi")
-def alive():
-    alive = bool(random.getrandbits(1))
-    if(alive):
-        return render_template('template.html', my_string="Foo", 
-        my_list=[6,7,8,9,10,11], title="Alive!", current_time=datetime.datetime.now())
-    else:
-        return render_template('template.html', my_string="Foo", 
-        my_list=[6,7,8,9,10,11], title="Dead!", current_time=datetime.datetime.now())
+def pi_alive(name):
+    return bool(random.getrandbits(1))
+
+def pis():
+    pi = ['freddy', 'brico', 'e17']
+    alives = {}
+    for p in pi:
+        alives[p] = pi_alive(p)
+
+    return alives
+
+@app.route("/pi/<string:name>")
+def alive(name):
+    alive = pi_alive(name)
+    return render_template('template.html', current_pi=name,
+                           status=alive, current_time=datetime.datetime.now())
 
 @app.route('/update')
 def update():
-    socketio.emit('new_score', "lol", broadcast=True)
+
+    socketio.emit('new_status', pis())
     return "ok"
 
 if __name__ == '__main__':
