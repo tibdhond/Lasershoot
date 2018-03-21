@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route("/")
@@ -7,4 +7,4 @@ def hello():
 
 @app.route("/lifeofpi")
 def alive():
-    return "Alive!"
+    return  render_template('lifeofpi.html',my_string="Alive in Tucson", my_list=[0,1,2])
