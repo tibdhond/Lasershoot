@@ -2,6 +2,7 @@ import MySQLdb
 import time
 import datetime
 import os
+import signal
 import subprocess
 
 db = MySQLdb.connect(host="eu-cdbr-azure-west-b.cloudapp.net", user="b7f7d467f4d922", passwd="94f415a0", db="dlwhackathon")
@@ -28,19 +29,20 @@ while True:
             gameRunning = False
             #TODO actually stop the game, how?
             #os.system("python theActualGame.py")
-            proc.terminate()
+            os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
             print "stopped game script"
     else:
         print "Spel is bezig!"
         if not gameRunning:
             gameRunning = True
             # TODO actually start the game
-            #os.system("python theActualGame.py")
+            os.system("echo " + str(row[0]) +" > currentGame.txt")
             proc = subprocess.Popen(
                 "python theActualGame.py",
                 stderr=subprocess.STDOUT,  # Merge stdout and stderr
                 stdout=subprocess.PIPE,
-                shell=True)
+                shell=True,
+                preexec_fn=os.setsid)
             print "started game script"
     
     

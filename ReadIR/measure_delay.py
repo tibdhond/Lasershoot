@@ -1,15 +1,28 @@
 import time
+import datetime
+import MySQLdb
 import csv
+import os
+import signal
+import subprocess
 import RPi.GPIO as GPIO
 
-print 'boe'
+db = MySQLdb.connect(host="dlw-hackathon.westeurope.cloudapp.azure.com", user="hackathon", passwd="Delaware.2011", db="hackathon")
+proc = subprocess.Popen(
+    "python3 alive.py3",
+    stderr=subprocess.STDOUT,  # Merge stdout and stderr
+    stdout=subprocess.PIPE,
+    shell=True,
+    preexec_fn=os.setsid)
+#create a cursor for the select
+cur = db.cursor()
 
 target = [100000, 801.0, 1784.0, 833.0, 592.0, 244.0, 596.0, 237.0, 601.0, 239.0, 341.0]
 result = [True] * 9
 percentage = 0.30
 
 diffList = [0.0] * 10
-def compare(arr):
+def compare(arr, proc):
     
     ok = True
     for i in range(1,9):
@@ -19,12 +32,15 @@ def compare(arr):
         if(not (abs(target[i] - arr[i]) <= percentage * target[i])):
             ok = False
             break
-   
-    
+    file = open('ReadIR/currentGame.txt','r')
+    newId = file.read()
+    print(newId)
+    file.close()
     print(arr[1:9])
     print(diffList)
     print(result)
     print('\n')
+    
     return ok
 
 power = 7
@@ -69,7 +85,37 @@ while(True):
             
         if counterWritten == 11:
             counterWritten = 0
-            isShot = compare(arr)
+            isShot = compare(arr, proc)
+            
+            
+            if isShot == True:
+                os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                print proc
+                proc = subprocess.Popen(
+                    "python3 dead.py3",
+                    stderr=subprocess.STDOUT,  # Merge stdout and stderr
+                    stdout=subprocess.PIPE,
+                    shell=True,
+                    preexec_fn=os.setsid)
+                try:
+                    ts = time.time()
+                    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                    cur.execute("""INSERT INTO hackathon.scores (game, timestamp, idpi) VALUES (%s, %s, %s)""", (newId, timestamp, 'Gerard'))
+                    db.commit()
+                except Exception as e:
+                    print "error: ", str(e)
+                    db.rollback()
+                print('I\'ve been shot! Inactive for 10 seconds!');
+                time.sleep(10);
+                print('I am active! Please, don\'t shoot me, I\'m only the Pi(ano player)!');
+                os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                proc = subprocess.Popen(
+                    "python3 alive.py3",
+                    stderr=subprocess.STDOUT,  # Merge stdout and stderr
+                    stdout=subprocess.PIPE,
+                    shell=True,
+                    preexec_fn=os.setsid)
+            
             print(isShot)
             counter = 0
             largenumberseen = False
