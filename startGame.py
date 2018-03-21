@@ -25,7 +25,10 @@ cur = db.cursor()
 
 cur.execute("select id from dlwhackathon.game order by timestamp desc")
 row = cur.fetchone()
-newId = int(row[0]) + 1
+if row != None:
+    newId = int(row[0]) + 1
+else:
+    newId = 1
 
 try:
     ts = time.time()

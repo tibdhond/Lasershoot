@@ -2,6 +2,8 @@ import time
 import csv
 import RPi.GPIO as GPIO
 
+print 'boe'
+
 target = [100000, 801.0, 1784.0, 833.0, 592.0, 244.0, 596.0, 237.0, 601.0, 239.0, 341.0]
 result = [True] * 9
 percentage = 0.30

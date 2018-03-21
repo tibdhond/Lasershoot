@@ -1,3 +1,1 @@
-import os
-
-os.system("echo 'hi' > test")
+ReadIR/measure_delay.py
