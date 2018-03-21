@@ -32,6 +32,11 @@ def hello():
 
 @app.route("/lifeofpi")
 def alive():
+    alive = False
+    if(alive):
         return render_template('template.html', my_string="Foo", 
-        my_list=[6,7,8,9,10,11], title="Dead or alive?", current_time=datetime.datetime.now())
+        my_list=[6,7,8,9,10,11], title="Alive!", current_time=datetime.datetime.now())
+    else:
+        return render_template('template.html', my_string="Foo", 
+        my_list=[6,7,8,9,10,11], title="Dead!", current_time=datetime.datetime.now())
 
