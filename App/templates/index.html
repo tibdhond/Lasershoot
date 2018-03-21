@@ -1,0 +1,3 @@
+{% for game in games %}
+    <a href={{url_for("showscore",gameid=game.Id)}}> Game {{game.Id}} </a>
+{% endfor %}

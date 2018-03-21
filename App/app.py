@@ -19,15 +19,12 @@ class Scores(db.Model):
 @app.route("/")
 def hello():
     games = Game.query.all()
-    print(games)
-    return "Hello World!"
+    return render_template("index.html", games=games)
 
 @app.route("/<gameid>")
 def showscore(gameid):
     scores_freddy = Scores.query.filter((Scores.game==gameid) & (Scores.idpi=="freddy")).all()
     scores_brico = Scores.query.filter((Scores.game==gameid) & (Scores.idpi=="brico")).all()
     scores_e17 = Scores.query.filter((Scores.game==gameid) & (Scores.idpi=="e17")).all()
-    print(scores_freddy)
-    print(scores_brico)
     return  render_template('score.html', score_freddy=len(scores_freddy), score_brico=len(scores_brico),
         score_e17=len(scores_e17))
