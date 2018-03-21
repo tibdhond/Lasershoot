@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-import datetime
+
+import datetime, threading, time, random
 
 app = Flask(__name__)
 app.config.from_object('config.Configuration')
@@ -32,7 +33,7 @@ def hello():
 
 @app.route("/lifeofpi")
 def alive():
-    alive = False
+    alive = bool(random.getrandbits(1))
     if(alive):
         return render_template('template.html', my_string="Foo", 
         my_list=[6,7,8,9,10,11], title="Alive!", current_time=datetime.datetime.now())
