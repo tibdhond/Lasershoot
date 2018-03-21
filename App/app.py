@@ -24,4 +24,4 @@ def hello():
 
 @app.route("/lifeofpi")
 def alive():
-    return  render_template('lifeofpi.html',my_string="Alive in Tucson", my_list=[0,1,2])
+    return  render_template('./templates/lifeofpi.html',my_string="Alive in Tucson", my_list=[0,1,2])
