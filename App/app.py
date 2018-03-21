@@ -15,13 +15,16 @@ class GameModes(db.Model):
 class Scores(db.Model):
     __tablename__ = 'scores'
 
-
+#tablename.query.watiknodigheb().all()
 @app.route("/")
 def hello():
     games = Game.query.all()
-    0/0
     return "Hello World!"
 
-@app.route("/lifeofpi")
-def alive():
-    return  render_template('./templates/lifeofpi.html',my_string="Alive in Tucson", my_list=[0,1,2])
+@app.route("/<gameid>")
+def alive(gameid):
+    scores_freddy = Scores.query.filter((Scores.game==gameid) and (Scores.idpi=="freddy")).all()
+    scores_brico = Scores.query.filter((Scores.game==gameid) and (Scores.idpi=="brico")).all()
+    scores_e17 = Scores.query.filter((Scores.game==gameid) and (Scores.idpi=="e17")).all()
+    return  render_template('lifeofpi.html', score_freddy=len(scores_freddy), score_brico=len(scores_brico),
+        score_e17=len(scores_e17))
