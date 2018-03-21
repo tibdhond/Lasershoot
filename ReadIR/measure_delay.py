@@ -32,10 +32,7 @@ def compare(arr, proc):
         if(not (abs(target[i] - arr[i]) <= percentage * target[i])):
             ok = False
             break
-    file = open('ReadIR/currentGame.txt','r')
-    newId = file.read()
-    print(newId)
-    file.close()
+
     print(arr[1:9])
     print(diffList)
     print(result)
@@ -98,9 +95,16 @@ while(True):
                     shell=True,
                     preexec_fn=os.setsid)
                 try:
+                    file = open('ReadIR/currentGame.txt','r')
+                    newId = file.read()
+                    print(newId)
+                    file.close()
+                    file = open('piid','r')
+                    piid = file.read()
+                    file.close()
                     ts = time.time()
                     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-                    cur.execute("""INSERT INTO hackathon.scores (game, timestamp, idpi) VALUES (%s, %s, %s)""", (newId, timestamp, 'Gerard'))
+                    cur.execute("""INSERT INTO hackathon.scores (game, timestamp, idpi) VALUES (%s, %s, %s)""", (newId, timestamp, piid))
                     db.commit()
                 except Exception as e:
                     print "error: ", str(e)
