@@ -33,12 +33,17 @@ def hello():
 
 @app.route("/lifeofpi")
 def alive():
-        return render_template('template.html', my_string="Foo",
-        my_list=[6,7,8,9,10,11], title="Dead or alive?", current_time=datetime.datetime.now())
+    alive = False
+    if(alive):
+        return render_template('template.html', my_string="Foo", 
+        my_list=[6,7,8,9,10,11], title="Alive!", current_time=datetime.datetime.now())
+    else:
+        return render_template('template.html', my_string="Foo", 
+        my_list=[6,7,8,9,10,11], title="Dead!", current_time=datetime.datetime.now())
 
 @app.route('/update')
 def update():
-    emit('new_score', "lol")
+    socketio.emit('new_score', "lol", broadcast=True)
     return "ok"
 
 if __name__ == '__main__':
