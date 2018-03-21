@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+import datetime
+
 app = Flask(__name__)
 app.config.from_object('config.Configuration')
 from flask_sqlalchemy import SQLAlchemy
@@ -15,6 +17,12 @@ class GameModes(db.Model):
 class Scores(db.Model):
     __tablename__ = 'scores'
 
+@app.template_filter()
+def datetimefilter(value, format='%Y/%m/%d %H:%M'):
+    """convert a datetime to a different format."""
+    return value.strftime(format)
+
+app.jinja_env.filters['datetimefilter'] = datetimefilter
 
 @app.route("/")
 def hello():
@@ -24,4 +32,6 @@ def hello():
 
 @app.route("/lifeofpi")
 def alive():
-    return  render_template('./templates/lifeofpi.html',my_string="Alive in Tucson", my_list=[0,1,2])
+        return render_template('template.html', my_string="Foo", 
+        my_list=[6,7,8,9,10,11], title="Dead or alive?", current_time=datetime.datetime.now())
+
